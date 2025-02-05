@@ -23,3 +23,27 @@ export const insertBuildingInfo = async (buildingInfo: any) => {
     if (conn) conn.release();
   }
 };
+
+// 건물 전체 정보 조회
+export const fetchAllBuildingInfo = async () => {
+  let conn;
+  const deleteStatus = 0;
+
+  try {
+    let sql = `
+      SELECT building_id, user_id, building_name, address
+      FROM t_building`;
+
+    conn = await pool.getConnection();
+
+    const [rows]: [RowDataPacket[], FieldPacket[]] = await conn.query(
+      sql,
+      deleteStatus,
+    );
+    return rows;
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.release();
+  }
+};
