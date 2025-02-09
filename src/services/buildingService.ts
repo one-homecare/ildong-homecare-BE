@@ -59,3 +59,16 @@ export const updateBuilding = async (updateData: any) => {
     }
   } catch (error) {}
 };
+
+// 건물 삭제하기
+export const deleteBuilding = async (buildingId: any) => {
+  try {
+    let result = await buildingModel.deleteBuilding(buildingId);
+
+    if (result) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {}
+};

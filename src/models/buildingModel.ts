@@ -33,7 +33,7 @@ export const fetchAllBuildingInfo = async () => {
     let sql = `
       SELECT building_id, user_id, building_name, address
       FROM t_building
-      WHERE delete_status =?`;
+      WHERE is_deleted =?`;
 
     conn = await pool.getConnection();
 
@@ -58,7 +58,7 @@ export const fetchAllBuildingById = async (buildingId: any) => {
     let sql = `
       SELECT building_id, user_id, building_name, address
       FROM t_building
-      WHERE delete_status =?
+      WHERE is_deleted =?
       AND building_id =?`;
 
     conn = await pool.getConnection();
@@ -93,6 +93,32 @@ export const updateBuilding = async (
     const [result]: any = await conn.query(sql, values);
 
     return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.release();
+  }
+};
+
+// 건물 삭제
+export const deleteBuilding = async (buildingId: any) => {
+  let conn;
+  const time = new Date();
+  const deletedStatus = 1;
+
+  try {
+    const sql = `UPDATE t_building
+    SET is_deleted =?, deleted_at =? 
+    WHERE building_id = ?`;
+
+    conn = await pool.getConnection();
+    const [result]: any = await conn.query(sql, [
+      deletedStatus,
+      time,
+      buildingId,
+    ]);
+
+    return result.affectedRows > 0;
   } catch (error) {
     throw error;
   } finally {
