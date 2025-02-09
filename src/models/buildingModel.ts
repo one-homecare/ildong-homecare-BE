@@ -32,7 +32,8 @@ export const fetchAllBuildingInfo = async () => {
   try {
     let sql = `
       SELECT building_id, user_id, building_name, address
-      FROM t_building`;
+      FROM t_building
+      WHERE delete_status =?`;
 
     conn = await pool.getConnection();
 
@@ -43,6 +44,57 @@ export const fetchAllBuildingInfo = async () => {
     return rows;
   } catch (err) {
     throw err;
+  } finally {
+    if (conn) conn.release();
+  }
+};
+
+// 건물 ID 별로 정보 조회
+export const fetchAllBuildingById = async (buildingId: any) => {
+  let conn;
+  const deleteStatus = 0;
+
+  try {
+    let sql = `
+      SELECT building_id, user_id, building_name, address
+      FROM t_building
+      WHERE delete_status =?
+      AND building_id =?`;
+
+    conn = await pool.getConnection();
+
+    const [rows]: [RowDataPacket[], FieldPacket[]] = await conn.query(sql, [
+      deleteStatus,
+      buildingId,
+    ]);
+    return rows;
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.release();
+  }
+};
+
+// 건물 업데이트
+export const updateBuilding = async (
+  buildingId: any,
+  setQuery: string,
+  values: any[],
+) => {
+  let conn;
+  const time = new Date();
+
+  try {
+    const sql = `UPDATE t_building SET ${setQuery}, modified_at =? WHERE building_id = ?`;
+
+    values.push(time, buildingId);
+
+    conn = await pool.getConnection();
+    const [result]: any = await conn.query(sql, values);
+
+    return result;
+  } catch (error) {
+    throw error;
   } finally {
     if (conn) conn.release();
   }
