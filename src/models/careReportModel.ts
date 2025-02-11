@@ -81,3 +81,34 @@ export const getValidCareCategoryIds = async (
     throw error;
   }
 };
+
+// 모든 작업 내역 조회
+// TODO: 우선 모든 카테고리 id를 한 컬럼에 넣어서 문자로 묶어서 보내는데 요구사항 수정에 따라 변경 가능함
+export const fetchAllCareReport = async () => {
+  let conn;
+  const deleteStatus = 0;
+
+  try {
+    let sql = `
+        SELECT 
+        cr.care_report_id, cr.user_id, cr.building_id, cr.care_status_id, cr.title, cr.care_content, cr.care_comment, 
+        GROUP_CONCAT(DISTINCT crc.care_category_id ORDER BY crc.care_category_id) AS care_category_ids
+        FROM t_care_report AS cr
+        JOIN t_care_report_category AS crc 
+            ON cr.care_report_id = crc.care_report_id
+        WHERE cr.is_deleted = ?
+        GROUP BY cr.care_report_id;`;
+
+    conn = await pool.getConnection();
+
+    const [rows]: [RowDataPacket[], FieldPacket[]] = await conn.query(
+      sql,
+      deleteStatus,
+    );
+    return rows;
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.release();
+  }
+};

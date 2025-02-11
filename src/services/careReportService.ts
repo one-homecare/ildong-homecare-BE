@@ -65,3 +65,16 @@ export const getAllCareStatus = async () => {
     }
   } catch (error) {}
 };
+
+// 작업 내역 조회하기
+export const getAllCareReport = async () => {
+  try {
+    let result = await careReportModel.fetchAllCareReport();
+    result = formatting.toCamelCase(result);
+    if (result.length > 0) {
+      return result;
+    } else {
+      return false;
+    }
+  } catch (error) {}
+};

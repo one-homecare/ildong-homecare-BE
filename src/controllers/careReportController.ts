@@ -43,3 +43,24 @@ export const getAllCareStatus = async (req: Request, res: Response) => {
     });
   }
 };
+
+// 작업 내역 전체 조회하기
+export const getAllCareReport = async (req: Request, res: Response) => {
+  try {
+    const result = await careReportService.getAllCareReport();
+
+    if (result) {
+      return res.status(200).send({
+        success: true,
+        message: '작업 내역 조회를 성공했습니다.',
+        data: result,
+      });
+    }
+  } catch (error) {
+    console.log('작업 내역 조회 실패: ', error);
+    return res.status(500).send({
+      success: false,
+      message: '서버 오류로 작업 내역 조회 실패',
+    });
+  }
+};
