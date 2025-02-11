@@ -3,12 +3,9 @@ import * as buildingController from '../controllers/buildingController';
 
 const router = express.Router();
 
-router.post('/api/building/create', buildingController.createBuilding);
+router.post('/api/building', buildingController.createBuilding);
 router.get('/api/building', buildingController.getAllBuilding);
-router.post('/api/building/update', buildingController.updateBuilding);
-router.delete(
-  '/api/building/delete/:buildingId',
-  buildingController.deleteBuilding,
-);
+router.patch('/api/building', buildingController.updateBuilding);
+router.delete('/api/building/:buildingId', buildingController.deleteBuilding);
 
 export default router;

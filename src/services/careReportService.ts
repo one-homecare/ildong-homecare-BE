@@ -16,15 +16,16 @@ export const createCareReport = async (careReportInfo: any) => {
     }
 
     const careReportId = result.insertId; // 생성된 `care_report_id`
+    const careCategoryIds = careReportInfo.careCategoryIds;
 
     // 카테고리 ID 유효성 체크 후 삽입
-    if (careReportInfo.careCategoryId?.length > 0) {
+    if (careCategoryIds?.length > 0) {
       const validCategoryIds = await careReportModel.getValidCareCategoryIds(
         conn,
-        careReportInfo.careCategoryId,
+        careCategoryIds,
       );
 
-      const invalidCategoryIds = careReportInfo.careCategoryId.filter(
+      const invalidCategoryIds = careCategoryIds.filter(
         (id: number) => !validCategoryIds.includes(id),
       );
 
